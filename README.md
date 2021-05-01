@@ -21,3 +21,5 @@ echo alias po=pushover-cli >> $HOME/.bashrc # Add alias for po to bash
 - [ ] get added to brew  
 - [ ] Setup CI/CD  
 - [ ] prepare first release
+- [ ] Cobvert priority to int or string
+- [ ] Remove message flag and assume text passed to command is message
