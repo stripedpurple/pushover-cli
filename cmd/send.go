@@ -22,8 +22,6 @@ import (
 	"time"
 )
 
-//"github.com/spf13/viper"
-
 // sendCmd represents the send command
 var (
 	Title       string
