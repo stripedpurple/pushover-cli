@@ -17,8 +17,13 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/viruscmd/pushover-cli/pkg"
+)
+
+var (
+	UserToken string
+	ApplicationToken string
 )
 
 // setupCmd represents the setup command
@@ -32,7 +37,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("setup called")
+		configWrite()
 	},
 }
 
@@ -47,5 +52,21 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// setupCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	setupCmd.Flags().StringVarP(&UserToken,"user", "u", "", "User token required by pushover")
+	setupCmd.Flags().StringVarP(&ApplicationToken,"app", "a", "", "Application token required by pushover")
+}
+
+func configWrite(){
+	if (UserToken == "" || &UserToken == nil) && (ApplicationToken == "" || &ApplicationToken == nil) {
+		fmt.Println("Here 1")
+
+			if err := pkg.WriteDefaultConfig();  err != nil {
+				fmt.Println("Error writing config file")
+			}
+	}
+
+	//pkg.Config{
+	//	ApplicationToken: "sdsd"
+	//	UserToken: "sdsdsd"
+	//}
 }
