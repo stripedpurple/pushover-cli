@@ -16,10 +16,12 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/viruscmd/pushover-cli/pkg"
 	"github.com/gregdel/pushover"
 	"github.com/spf13/cobra"
 	"log"
 	"time"
+	"fmt"
 )
 
 // sendCmd represents the send command
@@ -45,20 +47,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			//fmt.Println("send called")
 			sendNotification()
 		},
 	}
 )
 
-// Create a new pushover app with a token
-var app = pushover.New("TOKEN HERE")
-
-// Create a new recipient
-var recipient = pushover.NewRecipient("APIKEY")
 
 func init() {
-
 	// Adds send command to rootCmd
 	rootCmd.AddCommand(sendCmd)
 
@@ -86,12 +81,15 @@ func constructNotification() pushover.Message {
 	msg := pushover.Message{
 		Message: Message,
 	}
+
 	if &Title != nil {
 		msg.Title = Title
 	}
+
 	if &Priority != nil {
 		msg.Priority = Priority
 	}
+
 	if &URL != nil {
 		msg.URL = URL
 	}
@@ -99,15 +97,19 @@ func constructNotification() pushover.Message {
 	if &URLTitle != nil {
 		msg.URLTitle = URLTitle
 	}
+
 	if &Timestamp != nil {
 		msg.Timestamp = Timestamp
 	}
+
 	if &Retry != nil {
 		msg.Retry = Retry
 	}
+
 	if &Expire != nil {
 		msg.Expire = Expire
 	}
+
 	if &DeviceName != nil {
 		msg.DeviceName = DeviceName
 	}
@@ -123,17 +125,26 @@ func constructNotification() pushover.Message {
 	if &HTML != nil {
 		msg.HTML = HTML
 	}
+
 	return msg
 }
 
 func sendNotification() {
+	cfg, err := pkg.ReadConfigFile()
+
+	// Create a new pushover app with a token
+	app := pushover.New(cfg.ApplicationToken)
+
+	// Create a new recipient
+	recipient := pushover.NewRecipient(cfg.UserToken)
+
 	msg := constructNotification()
 	response, err := app.SendMessage(&msg, recipient)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println(response)
+	fmt.Println(response)
 }
 
 func _now() int64 {

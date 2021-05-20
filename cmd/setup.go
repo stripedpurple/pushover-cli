@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	UserToken string
+	UserToken        string
 	ApplicationToken string
 )
 
@@ -52,21 +52,30 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	setupCmd.Flags().StringVarP(&UserToken,"user", "u", "", "User token required by pushover")
-	setupCmd.Flags().StringVarP(&ApplicationToken,"app", "a", "", "Application token required by pushover")
+	setupCmd.Flags().StringVarP(&UserToken, "user", "u", "", "User token required by pushover")
+	setupCmd.Flags().StringVarP(&ApplicationToken, "app", "a", "", "Application token required by pushover")
 }
 
-func configWrite(){
+func configWrite() {
 	if (UserToken == "" || &UserToken == nil) && (ApplicationToken == "" || &ApplicationToken == nil) {
-		fmt.Println("Here 1")
+		if err := pkg.WriteDefaultConfig(); err != nil {
+			fmt.Println("Error writing config file")
+			fmt.Println(err)
+		}
+	} else {
+		cfg := pkg.Config{}
+		if &UserToken != nil {
+			cfg.UserToken = UserToken
+		}
+		if &ApplicationToken != nil {
+			cfg.ApplicationToken = ApplicationToken
+		}
 
-			if err := pkg.WriteDefaultConfig();  err != nil {
-				fmt.Println("Error writing config file")
-			}
+		err := pkg.WriteConfigFile(&cfg)
+
+		if  err != nil {
+			fmt.Println("Error writing config file")
+			fmt.Println(err)
+		}
 	}
-
-	//pkg.Config{
-	//	ApplicationToken: "sdsd"
-	//	UserToken: "sdsdsd"
-	//}
 }
